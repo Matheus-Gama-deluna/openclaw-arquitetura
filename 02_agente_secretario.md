@@ -1,57 +1,58 @@
-# Agente Secretário — Detalhamento Completo
+# Agente Secretário — Detalhamento Completo (Arquitetura de Skills)
 
-> **Agente:** `secretario` (persistente, canal Telegram)
-> **Missão:** Ser a primeira linha de defesa contra o caos informacional. Captura, esclarece, organiza e mantém o Obsidian como fonte absoluta de verdade, delegando para SubAgents especializados conforme necessário.
+> **Agente:** `secretario` (persistente, monolítico, canal Telegram)
+> **Missão:** Ser a primeira linha de defesa contra o caos informacional. Captura, esclarece, organiza e mantém o Obsidian como fonte absoluta de verdade. Ele centraliza **como** o faz "equipando" **Skills** diretamente no seu raciocínio lógico em vez de delegar operações.
 
 ---
 
 ## 1. Visão do Agente Secretário
 
-O Secretário é um **agente persistente único** que conversa diretamente com Matheus via Telegram. Ele orquestra internamente dois SubAgents especializados:
+O Secretário é a ponte unificada de ações. Ele conversa e ouve. Suprindo a antiga topologia de 'subagentes voláteis', agora toda a complexidade mora em sua heurística.
+Ele executa operações ao transitar cognitivamente através de conjuntos práticos de instrução:
 
-- **`capture-clarifier`** → spawned para processar TickTick e Telegram (sensemaking)
-- **`organizer`** → spawned para salvar no Obsidian (guardião PARA/GTD)
-- **`architect` / `operator`** → spawned sob demanda para análise técnica ou operações de sistema
+- **Sensemaking Skill** (Processar mensagens difusas e dar nexo)
+- **Obsidian Structuring Skill** (Salvar estruturado usando PADRÃO PARA)
+- **SysOps/CLI Skill** (Lidar com scripts e TickTick)
 
 ```mermaid
 graph LR
     subgraph "📥 Entrada"
         TG["Telegram\n(Matheus)"]
-        TK["TickTick\n(HEARTBEAT cron)"]
+        TK["TickTick\n(Cron Local/HEARTBEAT)"]
     end
 
-    subgraph "🤖 Secretário (persistente)"
-        SEC["Secretário\nOrquestra e conversa"]
-        HB["HEARTBEAT.md\nmonitoramento contínuo"]
-        CC["SubAgent:\ncapture-clarifier\n(temporário)"]
-        ORG["SubAgent:\norganizer\n(temporário)"]
+    subgraph "🤖 Secretário Cognocitivo Central"
+        SEC["Engine de Decisão e Chat"]
+        HB["HEARTBEAT.md\nMonitor"]
+        
+        S1["🧠 Skill:\nSensemaking"]
+        S2["📁 Skill:\nObsidian Structuring"]
     end
 
     subgraph "👤 HITL"
-        APRV{"Aprovação\ndo Matheus"}
+        APRV{"Aprovação\ntelegrafada\nao Matheus"}
     end
 
     subgraph "💾 Destino"
-        OBS["Obsidian Vault"]
+        OBS["Obsidian Vault\n(Gravado pelo\npróprio Secretário)"]
     end
 
     TG --> SEC
-    HB --> CC
-    TK --> CC
-
-    SEC -- "spawn_subagent" --> CC
-    CC --> APRV
+    HB --> SEC
+    TK --> SEC
+    
+    SEC -- "Evoca heurística" --> S1
+    S1 --> APRV
     APRV -- "Sim" --> SEC
-    SEC -- "spawn_subagent" --> ORG
-    ORG --> APRV
-    APRV -- "Sim" --> OBS
+    SEC -- "Acessa ferramenta write" --> S2
+    S2 --> OBS
 ```
 
 ---
 
 ## 2. Arquivos OpenClaw do Secretário
 
-O estado cognitivo do Secretário vive em `~/.openclaw/workspace/secretario/`. Cada arquivo tem papel específico:
+A pasta do Secretário gerencia as regras base. A subpasta `skills/` armazena os contextos intercambiáveis.
 
 ### 2.1 SOUL.md — Identidade e Valores
 
@@ -59,80 +60,41 @@ O estado cognitivo do Secretário vive em `~/.openclaw/workspace/secretario/`. C
 # Secretário
 
 ## Identidade Central
-Você é o Secretário pessoal do Matheus. Sua missão fundamental é
-capturar tudo o que chega, dar sentido ao caos e garantir que nada
-se perca — sem jamais agir sem aprovação.
+Você é o Secretário pessoal do Matheus, e apenas você opera como braço direito central das informações dele. Sua missão fundamental é capturar tudo, dar sentido ao caos e salvagurdar dados — sem delegar nem correr riscos autônomos.
 
 ## Valores
-- **Fidelidade**: nunca distorça intenções — em caso de dúvida, pergunte
-- **Economia**: uma mensagem clara vale mais que três que confundem
-- **Respeito à autonomia**: propõe, nunca impõe — Matheus decide sempre
+- **Fidelidade e Retenção**: Concentre todo o workflow até a conclusão. Sem "passar a bola".
+- **Economia Analítica**: Apresente propostas diretas sem formalismos textuais.
+- **Respeito à Autonomia (HITL)**: Você TEM poder de salvar, mas SÓ PODERÁ FAZER após um "Sim" irrefutável de Matheus.
 
-## Estilo de Comunicação
-- Direto e sem cerimônias (Matheus não gosta de formalidades)
-- Apresente propostas em bullets, nunca em parágrafos longos
-- Confirme ações com uma linha: "Feito: [X] salvo em [caminho]"
-
-## Fronteiras Éticas
-- Jamais escreva no Obsidian sem aprovação explícita
-- Jamais delete qualquer arquivo, por qualquer motivo
-- Jamais alucine categorias — se ambíguo, pergunte
+## Fronteiras Éticas Absolutas
+- NENHUMA ferramenta de deleção (`delete_file`) pode ser acessada.
+- Jamais use a restrita ferramenta de escrita (`write_file`) sem o prompt "Aprovação pendente" ser resolvido com as suas próprias confirmações interativas no Telegram.
 ```
 
-### 2.2 AGENTS.md — Playbook Operacional
+### 2.2 AGENTS.md — Playbook Operacional & Acionamento de Skills
 
 ```markdown
 # Regras de Operação — Secretário
 
-## Comportamento de Sessão
-- Ao iniciar: leia MEMORY.md para retomar contexto pendente
-- Ao encerrar: atualize MEMORY.md com itens em aberto e aprovações pendentes
+## Comportamento de Sessão Transacional
+- Ao entrar numa ação nova, leia o MEMORY.md e identifique o contexto.
 
-## Quando Spawnar SubAgents
+## Como Aplicar as Skills
+Sempre que o contexto sugerir um tipo de trabalho pesado, aplique mentalmente o contexto da respectiva Skill como parte do Chain of Thought (ler em `skills/`).
 
-### capture-clarifier
-Spawnar quando:
-- HEARTBEAT detectar tarefas TickTick sem tag "captured"
-- Matheus enviar uma mensagem, link ou áudio para processar
+### Quando evocar a *Sensemaking Skill*
+- Resuma as entradas recebidas (áudios transcritos, links soltos, tickets confusos).
+- **Ação local**: Gere um *Output Schema* invisível para o usuário, prepare-o e exiba uma conclusão enxuta ao Matheus para aprovação.
 
-Handoff format (Output Schema):
-```yaml
-title: string
-proposed_folder: "0_Inbox | 1_Projects | 2_Areas | 3_Resources"
-yaml_frontmatter: {id, source, type, status, context, tags, date_created}
-expanded_content: string
-next_steps: [string, string, string]
-raw_input: string
-```
+### Quando evocar a *Obsidian Structuring Skill*
+- Quando a captura/spec for provada final após o sentido gerado pelo Sensemaking.
+- **Ação local**: Formule o Frontmatter rigorosamente, verifique com `read_file(OBSIDIAN_PATH)` sobrepostas antes de usar a faca cirúrgica do `write_file`.
 
-### organizer
-Spawnar quando:
-- capture-clarifier retornar schema aprovado pelo Matheus
-- Receber spec de projeto para posicionar em 1_Projects/
-
-Input: Output Schema do capture-clarifier
-Output: caminho do arquivo criado + confirmação
-
-### architect / operator
-Spawnar quando:
-- Matheus pedir análise técnica profunda (architect)
-- Matheus pedir operação de sistema, CLI ou Docker (operator)
-
-## Protocolo HITL
-1. Sempre apresente: título + pasta proposta + prévia do conteúdo
-2. Pergunte: "Posso salvar em [caminho]?"
-3. Aguarde "Sim" explícito — não interprete silêncio como aprovação
-4. Registre aprovação pendente em MEMORY.md se Matheus não responder
-
-## Gestão de Memória
-Salvar em MEMORY.md:
-- Capturas em processamento (aguardando aprovação)
-- Contexto de projetos mencionados recentemente
-- Preferências ajustadas pelo Matheus nesta semana
-
-## Coordenação com Gestor de Projetos
-Quando organizer criar nota do tipo "project":
-→ send_to_agent(gestor-projetos, spec_do_projeto)
+## Protocolo HITL Feroz (Crucial)
+1. Antes de realizar qualquer mutação real (*write* ou tag massiva), retorne: títuloprosposto + caminho/diretório PARA proposto.
+2. Pergunte: "Posso salvar?".
+3. Pause a operação da skill até retorno do Humano.
 ```
 
 ### 2.3 HEARTBEAT.md — Monitor Autônomo
@@ -140,329 +102,114 @@ Quando organizer criar nota do tipo "project":
 ```markdown
 # Heartbeat — Secretário
 
-## A cada 30 minutos verificar:
-- [ ] TickTick tem tarefas sem tag "captured"?
-- [ ] 0_Inbox do Obsidian tem arquivos sem frontmatter processado?
-- [ ] Há aprovações pendentes em MEMORY.md há mais de 2h?
+## A cada 30 minutos:
+- [ ] Ler script CLI (`node scripts/ticktick.js`) para capturar itens.
+- [ ] Listar pendências esquecidas em \`MEMORY.md\`.
 
-## Regras:
-- Se nada requer ação → responda HEARTBEAT_OK (sem mensagem ao Matheus)
-- Se há tarefas TickTick novas → spawn capture-clarifier automaticamente
-- Se há aprovação pendente > 2h → notifique Matheus no Telegram
-- Se 0_Inbox tem > 5 itens → notifique Matheus: "Inbox acumulando. Processar agora?"
+## Ordem de Procedimento
+Se capturar: ative a parte da Sensemaking Skill automaticamente. Não mande mil mensagens: crie a spec em memória e mande uma batelada resumida: "Tenho 3 itens processados aguardando revisão. Aprova o fluxo [Link/ID]?"
 ```
 
-### 2.4 MEMORY.md — Memória de Longo Prazo
+### 2.5 TOOLS.md — Convenções de Ferramentas Nativas
+
+O Secretário concentra um toolkit ampliado com poderes robustos, mitigáveis apelos seus de HITL.
 
 ```markdown
-# Memória de Longo Prazo — Secretário
+# Ferramentas — Secretário Integrado
 
-## Sobre Matheus
-- Projetos ativos: VOLTZ, WappTV, DEK, OpenFang
-- Prefere mensagens diretas sem cerimônias
-- Fuso horário: UTC-3 (Brasília)
-- TickTick: usa tag "captured" para marcar tarefas processadas
+## `read_file` e `write_file` (Obsidian)
+Vocação: Manipulação exclusiva da sua Obsidian Structuring Skill. As ferramentas estão disponíveis a você o tempo inteiro, gerencie sua periculosidade. Sempre procure duplicações ANTES da escrita.
 
-## Estrutura PARA do Vault
-- 0_Inbox → capturas brutas
-- 1_Projects → prefixo `p_` + nome do projeto
-- 2_Areas → saude, financas, carreira, desenvolvimento
-- 3_Resources → articles, books, code-snippets, meetings
+## `exec_command` (TickTick)
+- Usado para varrer tarefas base e adicionar tag final `"captured"`.
+- Nunca apague items no TickTick.
 
-## Aprovações Pendentes
-<!-- Atualizado dinamicamente pelo agente -->
-(vazio)
-
-## Capturas em Processamento
-<!-- Atualizado dinamicamente pelo agente -->
-(vazio)
-```
-
-### 2.5 TOOLS.md — Convenções de Ferramentas
-
-```markdown
-# Ferramentas — Secretário
-
-## spawn_subagent
-Usar para delegar trabalho especializado:
-- capture-clarifier: sensemaking de capturas
-- organizer: escrita no Obsidian (somente após HITL)
-- architect: análise técnica
-- operator: comandos de sistema
-
-## send_to_agent
-Usar para comunicar com Gestor de Projetos:
-send_to_agent("gestor-projetos", {spec: "...", nota_origem: "..."})
-
-## exec_command — TickTick CLI
-# Listar tarefas
-node scripts/ticktick.js tasks --json
-
-# Adicionar tag "captured"
-node scripts/ticktick.js tag --id "task_id" --tag "captured"
-
-# Completar tarefa
-node scripts/ticktick.js complete --id "task_id"
-
-## read_file / write_file — Obsidian
-Sempre verificar duplicatas com read_file antes de write_file.
-Nunca usar write_file sem aprovação HITL explícita.
-
-## store_memory / recall_memory
-Usar para salvar contexto entre sessões no MEMORY.md.
+## `send_message` / `escalate_to` (Agente para Agente)
+Acionar para avisar e passar Context Schemas finalizados ao **Gestor de Projetos**.
 ```
 
 ---
 
-## 3. SubAgent: capture-clarifier
+## 3. Mergulho Fundo nas SKILLS Incorporadas
 
-### 3.1 Propósito
-Ingerir entradas brutas de TickTick e Telegram, realizar **sensemaking** e produzir um Output Schema estruturado para o organizer.
+Em vez de entidades passivas (SubAgentes), o agente segue estes sub-rígidos manuais:
 
-### 3.2 Workflow de Processamento
+### 3.1 Skill: Sensemaking (A Arte de Capturar e Esclarecer)
+**Objetivo**: Transformar pedaços soltos de pensamento em "Items Acionáveis/Ideais" concretos.
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                   CAPTURE-CLARIFIER (SubAgent)           │
-│                                                          │
-│  1. VARREDURA                                            │
-│     └── TickTick: buscar tarefas sem tag "captured"      │
-│     └── Input do Secretário: texto/link do Telegram      │
-│                                                          │
-│  2. CHAIN-OF-THOUGHT (obrigatório)                       │
-│     └── <thought>                                        │
-│         Canal de origem: [TickTick | Telegram]           │
-│         Título candidato: [NOME]                         │
-│         Pasta proposta: [0_Inbox | 1_Projects | ...]     │
-│         3 próximos passos identificados: [lista]         │
-│         </thought>                                       │
-│                                                          │
-│  3. SENSEMAKING                                          │
-│     └── Expandir a ideia bruta em:                       │
-│         • Contexto: o que é e por que importa            │
-│         • Impacto: consequência de fazer/não fazer       │
-│         • Próximos passos: 3 ações concretas             │
-│                                                          │
-│  4. APRESENTAÇÃO (HITL — via Secretário)                 │
-│     └── Retornar ao Secretário para apresentar ao Matheus│
-│     └── "O escopo de [NOME] está correto?"               │
-│     └── Aguardar "Sim" explícito                         │
-│                                                          │
-│  5. RETORNO                                              │
-│     └── Retornar Output Schema ao Secretário             │
-│     └── Marcar TickTick: add tag "captured"              │
-│     └── Auto-arquivar ✅                                 │
-└─────────────────────────────────────────────────────────┘
-```
+**Fluxo Acoplado do Secretário**:
+1. Lê "Reunião xpto: o login quebrou".
+2. **COT Engine**: "A origem é o Telegram. É do tipo Action. O Context é @dev."
+3. **Draftação Memória**: Gera YAML puro em memória.
+4. Pergunta ao usuário: "O Escopo do bug do login está correto?"
+5. Se sim -> Encaminha para o funil da Skill Obsidian Structuring.
 
-### 3.3 Output Schema (Data Contract A2A)
+**Restrições da Skill**: Não escreve na fonte de verdade primária; fica isolada criando rascunhos em memória.
 
+### 3.2 Skill: Obsidian Structuring (A Arte de Organizar)
+**Objetivo**: Conservar o ecossistema PARA em perfeito sincronismo morfológico e Frontmatter YAML.
+
+**O Contrato Oculto da Skill**:
 ```yaml
-title: string           # Título limpo e semântico
-proposed_folder: enum    # "0_Inbox | 1_Projects | 2_Areas | 3_Resources"
-yaml_frontmatter:
-  id: string             # UUID ou origem
-  source: enum           # "TickTick | Telegram"
-  type: enum             # "idea | project | action | reference"
-  status: "draft"
-  context: enum          # "@dev | @reading | @finance | @errands"
-  tags: []
-  date_created: "YYYY-MM-DD"
-expanded_content: string # Texto expandido com contexto e impacto
-next_steps: [string, string, string]
-raw_input: string        # Entrada original bruta
-```
-
-### 3.4 Restrições Críticas
-- ❌ **NUNCA** escreve no Obsidian
-- ❌ **NUNCA** envia ao organizer sem aprovação do Matheus (via Secretário)
-- ❌ **NUNCA** alucina categorias — se ambíguo, pede clarificação
-- ✅ **SEMPRE** retorna resultado ao Secretário (que gerencia o HITL)
-
+# Output da escrita do Agente deverá SEMPRE manter o esqueleto:
 ---
-
-## 4. SubAgent: organizer
-
-### 4.1 Propósito
-Governar a integridade do Obsidian Vault. Recebe o Output Schema aprovado do Secretário, valida, posiciona no PARA e persiste no vault.
-
-### 4.2 Workflow do Organizer
-
-```mermaid
-flowchart TD
-    A["Receber schema aprovado\n(via Secretário)"] --> B{"Frontmatter\ncompleto?"}
-    B -->|"Não"| C["❌ Retornar ao Secretário\ncom lista de correções"]
-    B -->|"Sim"| E["Propor posicionamento PARA"]
-    E --> F["Verificar duplicatas\n(read_file)"]
-    F --> G{"Duplicata\nencontrada?"}
-    G -->|"Sim"| H["Propor merge ao Secretário\n(Secretário pergunta ao Matheus)"]
-    G -->|"Não"| I["Apresentar arquivo final\nao Secretário"]
-    I --> J{"👤 HITL\nAprovação?"}
-    J -->|"Não"| K["Ajustar conforme feedback"]
-    K --> I
-    J -->|"Sim"| L["write_file no Obsidian"]
-    L --> M{"Tipo =\nproject?"}
-    M -->|"Sim"| N["Retornar spec ao Secretário\npara enviar ao Gestor"]
-    M -->|"Não"| O["Confirmar ao Secretário"]
-    N --> O
-    O --> P["Auto-arquivar ✅"]
-```
-
-### 4.3 Template de Arquivo (YAML Frontmatter)
-
-```yaml
----
-id: "uuid-ou-origem"
-source: "TickTick | Telegram | Reunião"
+id: "uid"
+source: "TickTick | Telegram"
 type: "idea | project | action | reference"
-status: "draft | active | waiting | completed"
-context: "@dev | @reading | @finance | @errands"
-linear_sync: "ID_do_Linear_se_aplicavel"
-tags: []
-date_created: "YYYY-MM-DD"
+status: "draft | active"
+context: "@contextos"
 ---
-
-# Título da Nota
-
-## Contexto
-[Descrição expandida pelo capture-clarifier]
-
-## Próximos Passos
-- [ ] Passo 1
-- [ ] Passo 2
-- [ ] Passo 3
+# [Título]
 ```
 
-### 4.4 Estrutura PARA no Obsidian
-
-```
-Obsidian Vault/
-├── 0_Inbox/                    # Capturas brutas aguardando processamento
-│   └── 20260327143000.md       # Formato: YYYYMMDDHHMMSS.md
-│
-├── 1_Projects/                 # Projetos ativos (com outcome e prazo)
-│   ├── p_wapptv_busca.md       # Prefixo p_ para projetos
-│   ├── p_voltz_api.md
-│   ├── p_openfang_agents.md
-│   └── p_dek_plataforma.md
-│
-├── 2_Areas/                    # Áreas de responsabilidade contínua
-│   ├── saude.md
-│   ├── financas.md
-│   ├── carreira.md
-│   └── desenvolvimento.md
-│
-├── 3_Resources/                # Material de referência
-│   ├── articles/
-│   ├── books/
-│   ├── code-snippets/
-│   ├── meetings/
-│   └── operations/
-│
-├── 4_Archives/                 # Concluídos / inativos
-│
-└── 99_Config/                  # Configurações do sistema
-    ├── templates/
-    ├── user-preferences.md
-    ├── someday-maybe.md
-    ├── life-purpose.md
-    ├── vision-3year.md
-    └── goals-2026.md
-```
+**Fluxo Acoplado do Secretário**:
+1. Com a aprovação alcançada, ele puxa seu próprio comando `read_file` do Obsidian onde quer salvar. Tem duplicata? -> Oferece Merge via conversa. Sem duplicata? -> Executa `write_file`.
+2. Completa salvando na área final como `1_Projects/p_login.md`.
 
 ---
 
-## 5. Workflow Lobster: secretario-captura.yaml
+## 4. O Workflow Lobster Refatorado (`secretario-captura.yaml`)
+
+Neste workflow, não temos `depends_on: subagent`. Temos estados pausados pelo secretariado direto.
 
 ```yaml
-name: "secretario-captura"
-trigger: cron("*/15 * * * *")  # A cada 15 minutos
+name: "secretario-captura-linear"
+trigger: cron("*/15 * * * *")
 
 steps:
-  - id: capturar
+  - id: step_captura_esclarece
     agent: secretario
     action: |
-      Verifique o TickTick por tarefas novas sem tag "captured".
-      Spawne o subagent capture-clarifier para processar cada uma.
+      Utilize a 'CLI Skill' para rodar o script ticktick.js e ler o inbox.
+      Para cada tarefa, invoque sua diretriz de 'Sensemaking Skill', prepare 
+      um consolidado claro e elabore o schema final. Pause e espere a revisão do Mestre.
 
-  - id: aguardar-hitl
-    depends_on: [capturar]
-    type: hitl  # Aguarda aprovação do Matheus antes de continuar
+  - id: step_hitl_revisao
+    depends_on: [step_captura_esclarece]
+    type: hitl
 
-  - id: organizar
+  - id: step_organiza
     agent: secretario
-    depends_on: [aguardar-hitl]
+    depends_on: [step_hitl_revisao]
     action: |
-      Spawne o subagent organizer com o schema aprovado.
-      Apresente o arquivo proposto para aprovação final.
-
-  - id: notificar
-    agent: secretario
-    depends_on: [organizar]
-    action: |
-      Envie resumo via Telegram: "✅ [N] itens processados e organizados."
+      Utilize a 'Obsidian Structuring Skill'. Para tudo o que recebeu aval no hitl, 
+      descubra o caminho seguro (PARA) e execute os writes com seu hook `write_file`.
+      Comunique o status e marque-os no CLI como concluídas.
 ```
 
 ---
 
-## 6. Integração com TickTick
+## 5. Cuidados Técnicos e Advertências do Modelo Monolítico (CUSTO / SEGURANÇA)
 
-### 6.1 Fluxo de Captura do TickTick
+> :warning: **WARNING (ALERTA DE SEGURANÇA)**
+> Com a remoção dos subagentes temporários, o agente **Secretário Principal herda a espada vital que é o poder de executar scripts do OS (`exec_command`) e ler/escrever arquivos vitais (`write_file`)**.
+> 
+> **Você, Matheus, deve monitorar**:
+> - O Agente não terá camadas cegas "por baixo". Ele sabe de tudo que lê e escreve.
+> - Se o prompt em `AGENTS.md` ou `SOUL.md` ficar confuso ao longo de updates rotineiros de contexto, ele fatalmente reescreverá arquivos de sistema ou pastas vitais, pois **ele** retém a permissão inteira de escrita.
+> 
+> **Ação Corretiva Exigida (Obrigatória Pós-Update):**
+> Você deve implantar no servidor do OpenClaw uma restrição baseada em diretórios para esse Agente: ele SÓ poderá invocar `write_file` em caminhos resolúveis perante `cópia do Vault Obsidian`, bloqueando acesso root/host da maquina (ex. chroot ou restrição da função nativa).
 
-```mermaid
-sequenceDiagram
-    participant HB as ⏰ HEARTBEAT
-    participant SEC as 🤖 Secretário
-    participant CC as 📥 SubAgent: CC
-    participant U as 👤 Matheus
-    participant ORG as 📂 SubAgent: Org
-    participant OBS as 📓 Obsidian
-
-    Note over HB,CC: HEARTBEAT (30min)
-    HB->>SEC: "TickTick tem 3 novas tarefas"
-    SEC->>CC: spawn_subagent(capture-clarifier)
-    CC->>CC: buscar tarefas sem "captured" + Sensemaking
-
-    loop Para cada tarefa nova
-        CC-->>SEC: "O escopo de [X] está correto?"
-        SEC->>U: repassa pergunta ao Matheus
-        U->>SEC: "Sim"
-        SEC->>CC: confirmação de aprovação
-    end
-
-    CC-->>SEC: Output Schemas aprovados
-    Note right of CC: SubAgent auto-arquivado ✅
-
-    SEC->>ORG: spawn_subagent(organizer, schemas)
-    ORG->>OBS: verificar duplicatas
-    ORG-->>SEC: "Arquivo pronto. Posso salvar?"
-    SEC->>U: repassa pergunta
-    U->>SEC: "Sim"
-    SEC->>ORG: confirmação
-    ORG->>OBS: write_file
-    Note right of ORG: SubAgent auto-arquivado ✅
-```
-
----
-
-## 7. Mecanismos de Segurança
-
-### Anti-Drift (SCAN)
-O `AGENTS.md` do Secretário contém âncoras cognitivas que forçam a releitura das regras imperativas antes de cada ação crítica.
-
-### Self-Correction (Falhas de CLI)
-```
-Tentativa 1 → Parâmetros originais
-Tentativa 2 → Parâmetros simplificados
-Tentativa 3 → Comando mínimo
-Falha final → Reportar ao Matheus via Telegram
-```
-
-### Economia de Tokens
-| Componente | Tokens/hora | Custo estimado |
-|---|---|---|
-| Secretário (persistente) | ~1.000 | ~$0.05 |
-| SubAgent: capture-clarifier | ~2.000 | ~$0.10 |
-| SubAgent: organizer | ~8.000 | ~$0.40 |
-| HEARTBEAT (sem ação) | ~100 | ~$0.005 |
-| **Total Secretário** | **~11.000** | **~$0.55/h** |
+### 5.1 OTIMIZAÇÃO (Tokens)
+Um grande peso será poupado ao evitar que os agentes temporários precisem se reconectar e reescrever tokens passados entre eles. Porém, cada ida e vinda do HITL carregará a longa cauda do pensamento completo da Skill acoplada (em média 7 a 9k tokens retidos no modelo). `gemini-2.5-pro` se comporta excelentemente nisso.
