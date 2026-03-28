@@ -1,26 +1,47 @@
+---
+name: obsidian_structuring
+description: "Padroniza e salva informações validadas no Obsidian Vault (PARA Method). Requer aprovação HITL prévia."
+metadata: { "openclaw": { "emoji": "🗂️", "requires": { "tools": ["read_file", "write_file"] } } }
+---
+
 # Obsidian Structuring Skill
 
-**Objetivo:** Conservar e alimentar o `~/obsidian_vault` usando o Método PARA (`0_Inbox`, `1_Projects`, `2_Areas`, `3_Resources`, `4_Archives`).
-**Ativação:** Requerimento expresso de aprovação do usuário ("Sim, pode salvar.").
+Esta skill trata do domínio físico e governança dos seus dados vitais no Obsidian Vault. O seu objetivo é preservar o sistema **PARA Method** consistente e evitar duplicação ou corrupção.
 
-## 1. Regras Geométricas do PARA
-Você **TEM** flexibilidade para criar e modelar os caminhos, desde que não invada a hierarquia superior:
-- Correto: `~/obsidian_vault/1_Projects/APP_Financeiro/requisitos.md`
-- Correto: `~/obsidian_vault/1_Projects/P_Reforma_Casa.md`
-- Incorreto: `~/obsidian_vault/Projetos_Novos/` (Fora da hierarquia 0,1,2,3,4).
+## ATENÇÃO MÁXIMA: Regra de Deleção e Segurança (Quarentena)
 
-## 2. Flexibilidade Inteligente (Tags e Folders)
-- Quando estruturar um projeto, crie Tags cruzadas (ex: `#dev`, `#financas`) nativamente no *Frontmatter YAML*.
-- Você tem autonomia para propor subpastas estrutais se notar que o projeto ou a área necessitam abrigar 3 ou mais anexos em breve.
+- Você **NÃO TEM PERMISSÃO** sob nenhuma circunstância de apagar definitivamente um arquivo da máquina.
+- **Se precisar apagar ou substituir severamente**: mova o arquivo antigo renomeando-o para dentro da pasta lixeira dedicada no Vault (`.trash/`), garantindo a recuperabilidade em caso de erro da IA.
 
-## 3. Merge Criativo (Prevenção de Esmagamento de Dados)
-Sempre rode `read_file` em arquivos com nomes similares ao que deseja salvar. 
-- *Conflito Encontrado?* Não sobrescreva os dados preexistentes.
-- *Estratégia:* Injete seu Draft JSON aprovado NO FINAL do documento existente com o cabeçalho `## Log Complementar - [Data]`. 
-- Se forem notas avulsas mas correlatas, crie conexões horizontais (`[[Nome Da Nota]]`) no final delas, impedindo isolamento e perda de informação.
+## Instruções de Coordenação (Passo a Passo)
 
-## 4. Hook de Escrita
-Uma vez montado o Frontmatter com YAML puro e o Corpo do Texto:
-1. Construa o Path local absoluto seguro (`~/obsidian_vault/...`).
-2. Dispare `write_file(path, content)`.
-3. Notifique o resultado (exemplo: `Arquivo P_X salvo com sucesso.`). Se for projeto, informe o Gestor no fluxo final.
+1. **Validação do Draft**:
+   - Assegure-se de que o rascunho em memória (*Sensemaking Skill*) tem autorização expressa do usuário. Troque o `status` para adequar-se à fase atual ("active", etc).
+
+2. **Roteamento de Diretório (PARA)**:
+   - Aplique às pastas corretas:
+     - Itens sem escopo maduro -> `0_Inbox/`
+     - Trabalhos com entrega -> `1_Projects/`
+     - Responsabilidades contínuas -> `2_Areas/`
+     - Materiais estáticos de pesquisa -> `3_Resources/`
+     - Itens inativos -> `.trash/` ou `4_Archives/`
+
+3. **Verificação de Redundância (Anti-Drift)**:
+   - ANTES de engajar a ferramenta `write_file`, use `read_file` no diretório mapeado para verificar nomes/arquivos preexistentes e evitar sobreposição cega.
+   - Em caso de conflito, pare o robô e demande auxílio no Chat (ofereça o *merge*).
+
+4. **Escrita Frontmatter**:
+   - Respeite inteiramente (sem supressão de linhas) o formato obrigatório abaixo:
+   ```yaml
+   ---
+   id: "{id}"
+   source: "{source}"
+   type: "{type}"
+   status: "{status}"
+   context: "{context}"
+   ---
+   # {título}
+
+   {corpo}
+   ```
+   - Efetue o `write_file` só após formatar. Responda positivamente com o caminho alterado no final.

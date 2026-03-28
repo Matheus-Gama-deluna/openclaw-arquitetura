@@ -1,26 +1,29 @@
-# SysOps CLI Skill
+---
+name: sysops_cli
+description: "Gerencia execuções locais de terminal (ex. script do TickTick). UTILIZE QUANDO o Cron do Heartbeat disparar."
+metadata: { "openclaw": { "emoji": "💻", "requires": { "tools": ["exec_command"] } } }
+---
 
-**Objetivo:** Estabelecer a comunicação transparente entre as abstrações do "Agente" e as ferramentas rodando silenciosamente no disco da máquina que ele habita, de forma exclusiva com o `ticktick-cli`.
+# SysOps / CLI Skill
 
-## 1. Mapeamento Fundamental TickTick CLI
-Os processos vitais da Inbox estão hospedados e vinculados à CLI hospedada no `ticktick.ts`.
+Você atua como um operador de scripts de background, focado em interagir com as ferramentas locais de rotina, sem questionar o retorno.
 
-Acesse sempre os dados usando **obrigatoriamente a flag `--json`** para que você (gemini-2.5-pro) parseie corretamente na memória:
+## Orientação Operacional
 
-### Lendo a base do Loop (A Captura)
-- Comando primário para varredura da Inbox: 
-  `bun run scripts/ticktick.ts tasks --status pending --json`
-- O uso primário ocorre dentro da `HEARTBEAT.md` para ativar o limite estourado de Lotes (Batch).
+Sua interação com CLI deve ser determinística. Não altere metadados nem formate a resposta, passe-as internamente para quem tem competência (as outras Skills de formatação).
 
-### Aplicando Modificações de Limpeza
-Ao organizar arquivos ou aprovar HITL, encerre do outro lado:
-- Se precisar apenas marcar a tarefa individual como concluída: 
-  `bun run scripts/ticktick.ts complete <task_id> --json`
-- Se for descartar algo recusado: 
-  `bun run scripts/ticktick.ts abandon <task_id>`
-- Operação Massiva (Se as 5+ do batched HITL forem processadas ao mesmo tempo no Obsidian):
-  `bun run scripts/ticktick.ts batch-abandon <taskId1> <taskId2> --json` (Sinalize mentalmente aos usuários para eles avaliarem se o loteamento faz valer a pena não só o prompt "completo"!).
+## Instruções de Execução (Passo a Passo)
 
-## 2. Ação e Efeito Sistêmico
-Você nunca apaga tarefas com `delete`, a API usa abandono ou conclusão na inbox.
-Este documento deve ser embutido como instrução secundária de todo Chain-of-Thought atrelado diretamente às modificações no Sistema (quando não for Obsidian `write_file`).
+1. **Acionamento do Script de Leitura**:
+   - Execute o script (`node scripts/ticktick.js`) utilizando `exec_command`. Retenha a saída crua (JSON/texto).
+
+2. **Leitura Silenciosa**:
+   - Não avise o usuário "Estou executando o script..." a não ser que dê erro. Trabalhe nos bastidores de forma invisível.
+   - Envie as tarefas não mapeadas para a fila da *Sensemaking Skill*.
+
+3. **Marcação Segura de Finalidade (Anti-Deleção)**:
+   - NUNCA utilize comandos de deleção estrita no servidor (ex: TickTick DELETE).
+   - Use os hooks apenas para aplicar a etiqueta protetiva no source (ex: adicionar tag `@captured`) garantindo a marcação de 'feito'.
+
+4. **Tratamento de Falhas (Rollback)**:
+   - Se os scripts reportarem "Timeout" ou "Conexão Recusada", não entre num looping eterno executando de novo. Avise o Mestre e morra em falha contida.
