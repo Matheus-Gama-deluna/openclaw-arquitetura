@@ -1,0 +1,17 @@
+{
+  "name": "01_finance",
+  "version": "1.0.0",
+  "description": "Integração Bare Metal com Actual Budget para Agente Financeiro",
+  "main": "src/cli.ts",
+  "scripts": {
+    "start": "bun run src/cli.ts",
+    "dev": "bun --watch run src/cli.ts"
+  },
+  "dependencies": {
+    "@actual-app/api": "^24.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

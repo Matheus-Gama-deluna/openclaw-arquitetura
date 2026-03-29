@@ -1,6 +1,6 @@
 ---
 name: linear_worker_skill
-description: "Gerencia a criação e leitura de Epics, Issues e Sprints na API do Linear usando a CLI local. Use isso para materializar a decomposição de um projeto no Linear ou para verificar status de sprints e bloqueios (Heartbeat)."
+description: "Gerencia API do Linear. USE QUANDO precisar aprovar, baixar tarefas ou empurrar dados validados do Obsidian (YAML_sync). NÃO USE se as tarefas não estiverem aprovadas na fila_aprovacoes.md ou sem ordem direta. NÃO USE para operações matemáticas ou rotinas puras fora do Linear."
 metadata: {
   "openclaw": {
     "emoji": "⚙️",
@@ -15,25 +15,26 @@ disable-model-invocation: false
 
 # Linear Worker Skill
 
-A sua função ao ativar esta skill é traduzir a intenção planejada (Chain-of-Thought e Decomposição aprovada) em ações materiais na base de dados do Linear. Você é a ponte de escrita e leitura do status dos projetos.
+A sua função ao ativar esta skill é materializar intenções e atividades do Obsidian para o banco de dados do Linear e vice-versa, sendo que **o Obsidian (YAML) é a fonte absoluta de verdade.**
 
-## Instruções de Execução (Criação de Lote)
-Sempre que o Matheus aprovar a criação das issues geradas pelo seu planejamento:
-
-1. **Ação Sequencial:**
-   - Execute o script via `exec_command` para criar o Epic primeiro (caso necessário). Armazene o ID retornado.
-   - Em seguida, utilize `exec_command` repetidas vezes para criar as *Issues* filhas atreladas ao Epic. (Ex: `node scripts/linear-cli.js createIssue --team "VOLTZ" --epic "VOLTZ-EP-10" --title "Auth JWT"`).
-2. **Retenção de Dados:**
-   - Ao final das execuções, você **deve reter o ID** principal criado (`linear_id` do epic ou issue central) na sua memória para a etapa seguinte.
-3. **Pós-Criação:**
-   - Confirme no chat com o Matheus: *"Criei com sucesso. Epic [ID] e [N] issues no Linear."*
-   - IMEDIATAMENTE após, encerre esta skill e acione a *Obsidian Sync Skill* para aplicar o ID na nota física.
+## Regras de Sincronização (Criação ou Atualização)
+1. **Verificação de Aprovação:**
+   - Nunca crie ou altere uma issue se a propriedade `aprovacao.status` da nota original não for igual a `aprovada`.
+2. **Leitura/Mapeamento GTD para Linear:**
+   - `titulo` -> title
+   - `projeto` -> team/project no Linear
+   - `status` -> status do Linear (ex: `ativa` = In Progress, `proxima_acao` = Ready, `bloqueada` / `aguardando` = Blocked)
+3. **Se a issue já existir (`linear_id` preenchido):**
+   - Execute o script `node scripts/linear-cli.js updateIssue` para refletir campos que tenham mudado.
+4. **Após Criação/Alteração:**
+   - Recupere o `linear_id` final e, IMEDIATAMENTE após, acione a skill `obsidian_sync` para atualizar o ID e o `status_sync: "sincronizado"` na nota original.
 
 ## Instruções de Leitura (Heartbeat & Alertas)
-Quando evocar esta skill para varrer o status dos Sprints (conforme regras do seu arquivo `HEARTBEAT.md`):
+Quando evocar esta skill para varrer o status (conforme `HEARTBEAT.md`):
+- Puxe os projetos ativos.
+- Compare com as informações da sua `MEMORY.md`.
+- Se encontrar issues estagnadas que estão "In Progress" no Linear mas que deveriam estar bloqueadas ou esperando revisão, leve isso à Revisão Semanal.
 
-1. **Verificação Silenciosa:**
-   - Use `exec_command` para puxar os dados de projetos ativos ou Sprints. (Ex: `node scripts/linear-cli.js sprint --team "VOLTZ"`).
-   - Analise os resultados de forma silenciosa (sem chat) procurando por gargalos de prazo.
-2. **Alertas:**
-   - Só chame a atenção do usuário se encontrar problemas reais (Sprints em risco, issues do Matheus paradas há muito tempo).
+## TRATAMENTO DE ERRO (Gatilho de Fallback)
+- Se o script `linear-cli.js` quebrar, falhar por timeout ou credencial inválida, **não entre em loop de tentativa erro**. Pare a execução da ferramenta.
+- Escreva o log / sumário do erro no arquivo `30-Controle/divergencias-linear.md` para revisão pelo humano.

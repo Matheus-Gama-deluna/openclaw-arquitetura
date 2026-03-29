@@ -1,6 +1,6 @@
 ---
 name: obsidian_sync_skill
-description: "Lê e atualiza o Frontmatter YAML das notas de projeto no Vault Obsidian para incluir propriedades do Linear (ex: linear_sync e progress). Use IMEDIATAMENTE após criar entidades usando a Linear Worker Skill ou quando o Heartbeat identificar avanço de progresso de Sprints."
+description: "Lê e atualiza o Frontmatter YAML das notas de projeto no Vault Obsidian para refletir estados GTD, aprovações, e IDs remotos (Linear). Use após modificações estruturais do processamento ou após criações remotas."
 metadata: {
   "openclaw": {
     "emoji": "🔄",
@@ -14,31 +14,24 @@ disable-model-invocation: false
 
 # Obsidian Sync Skill
 
-O seu objetivo é manter a consistência bidirecional ("O Elo") entre o Linear e as anotações do cofre Obsidian (`1_Projects/`), garantindo que os painéis (Dashboards) em Markdown visualizados pelo Matheus estejam sempre precisos e vivos.
+O seu objetivo é manter a consistência física do modelo YAML das notas de tarefas e projetos (`Projetos/Gestor de Projetos/tarefas/` etc). 
 
-## CRÍTICO: Regra de Preservação e Risco de Perda de Dados
-- NUNCA reescreva uma nota do Obsidian apenas com o cabeçalho YAML.
-- **PASSO OBRIGATÓRIO:** Você deve usar a ferramenta `read_file` PRIMEIRO no caminho do projeto para capturar o corpo de texto existente. Só depois você pode usar a ferramenta `write_file` com o arquivo completo.
+## ATENÇÃO MÁXIMA: PREGUIÇA É INACEITÁVEL
+- NUNCA reescreva uma nota do Obsidian apenas com o cabeçalho YAML jogando fora o corpo. Omitir campos resultará em quebra catástrófica do Vault. Leve o tempo que precisar, mas reescreva todas as chaves YAML intactas.
+- **PASSO OBRIGATÓRIO:** Use a ferramenta `read_file` PRIMEIRO para capturar o corpo em Markdown integralmente.
 
-## Instruções de Sincronização (Passo a Passo)
+## Instruções de Atualização (Patch YAML)
+Quando for aplicar a gravação de uma nota (seja porque aprovou um processamento GTD, seja porque o Linear retornou um ID):
 
-1. **Localização do Alvo**:
-   - Descubra qual arquivo em `1_Projects/` é a semente do seu projeto atual. Use a tabela no `MEMORY.md` caso necessite lembrar o caminho.
-
-2. **Leitura e Extração**:
-   - Utilize `read_file` no caminho. Extraia cuidadosamente todo o bloco YAML localizado entre os marcadores `---` e `---` no topo, e preserve todo o texto abaixo do segundo `---`.
-
-3. **Injeção de Metadados (O Elo)**:
-   - Adicione ou atualize chaves críticas que conversam com o Linear. Se não existirem, crie-as:
+1. **Localização**: Veja a estrutura em `MEMORY.md` e ache o alvo.
+2. **Extração**: Separe o YAML entre os marcadores `---`.
+3. **Patch Seguro**:
+   - Respeite o novo formato extenso de YAML (com `contextos`, `energia`, `prioridade`, `sincronizacao`, `datas`).
+   - Se for update do Linear, mude:
    ```yaml
-   ---
-   # (mantenha os id, type, status originais)
-   linear_sync: "VOLTZ-EP-10"   # ID principal do Epic ou Issue-Pai
-   linear_team: "VOLTZ"         # Time/Projeto correspondente
-   progress: 35                 # Se souber a % de conclusão, insira de 0 a 100
-   ---
+   sincronizacao:
+     linear_id: "VOLTZ-123"
+     status_sync: "sincronizado"
    ```
-
-4. **Gravação**:
-   - Reconstrua o texto (Frontmatter alterado + Corpo inalterado) e envie com `write_file`.
-   - Adicione o link mapeado na sua tabela interna no arquivo `MEMORY.md` para evitar varreduras futuras lentas.
+   - Se possuir divergência, crie e preencha os campos referentes e informe o usuário enviando o problema para `30-Controle/divergencias-linear.md`.
+4. **Gravação**: Reúna Frontmatter + Corpo e salve. Atualize os eventos em `auditoria_local`.

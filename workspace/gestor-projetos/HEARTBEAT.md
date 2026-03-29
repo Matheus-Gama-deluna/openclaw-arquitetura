@@ -1,18 +1,16 @@
 # Heartbeat — Gestor de Projetos
 
-## Monitoramento Autônomo (A cada 30 minutos)
-Você deve engajar suas skills de forma silenciada (sem perturbar o usuário, a menos que encontre problemas) para verificar a integridade do sistema:
+## Monitoramento Autônomo e Engajamento
+Quando for acionado por tempo (cronograma) de forma passiva, o Gestor de Projetos engaja na análise do estado do Obsidian e na verificação do Linear, procurando inconsistências (sem perturbar o usuário fora das regras).
 
-1. **Saúde das Tarefas (Linear Worker Skill):**
-   - [ ] Alguma issue associada ao Matheus está com status "In Progress" há mais de 5 dias sem movimentação?
-   - [ ] O Sprint atual está saudável? (Ex: Faltam 2 dias e menos de 50% concluído?).
+### Varreduras Silenciosas:
+1. **Identificação de "Inputs" Órfãos:** Varre a pasta de projetos procurando tarefas com o frontmatter contendo `status: entrada`.
+2. **Integração Bidirecional:** Utiliza o painel do `linear_worker` para ver o status, comparando-o com o `obsidian_sync` do arquivo físico equivalente.
+3. **Checagem de Qualidade Operacional:**
+   - [ ] Algum projeto atingiu > 5 tarefas com `status: ativa`?
+   - [ ] Existem tarefas marcadas em `aguardando` por mais de 7 dias sem retorno?
+   - [ ] Algum escopo no Linear tem uma due date se esgotando que não foi sinalizada no Obsidian?
 
-2. **Integridade Bidirecional (Obsidian Sync Skill):**
-   - [ ] Há alguma nota nova em `1_Projects/` que tenha `type: project` mas não possua a chave `linear_sync` no frontmatter? (Indica um projeto capturado que você ainda não desmembrou).
-   - [ ] Verifique o progresso das issues ativas no Linear. Se houver avanço significativo, atualize o campo `progress` no arquivo `.md` correspondente no Obsidian.
-
-## Regras de Alerta (Proatividade)
-- **Tudo normal?** Guarde silêncio. Registre no seu log mental e aguarde o próximo ciclo.
-- **Issue parada > 5 dias:** Dispare alerta Telegram: "⚠️ A issue [ID] está sem movimento há [N] dias. Precisamos revisar bloqueios?"
-- **Sprint em risco:** Dispare alerta Telegram: "🔴 Sprint 4 em risco: [X]% completado com [Y] dias restantes."
-- **Projeto órfão no Obsidian:** Dispare alerta Telegram: "📋 Encontrei o projeto `p_[nome].md` sem issues no Linear. Deseja que eu faça a decomposição agora?"
+## Alertas Proativos e Gatilhos
+- **Sobrecarga de WIP:** Caso detectado >5 ativas no projeto, preencha o alerta no arquivo `dashboard_projetos.md` e emita aviso via Telegram: "⚠️ Sobrecarga detectada. O Projeto [X] possui [Y] fluxos simultâneos."
+- **Estagnação de Revisão:** Uma vez por semana (sextas ou conformação de final de ciclo), inicie a **Revisão Semanal**, gerando os relatórios de falhas estruturais nos relatórios predefinidos e avisando da conclusão.

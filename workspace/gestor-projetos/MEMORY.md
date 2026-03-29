@@ -1,25 +1,22 @@
 # Memória de Longo Prazo — Gestor de Projetos
 
-*Este arquivo é a "Tabela de Roteamento" do Gestor, evitando buscas excessivas no cofre Obsidian e protegendo os limites de tokens.*
+*Este arquivo é a "Tabela de Roteamento" do Gestor. Permite buscas rápidas em vez do uso contínuo de grep em todo Vault.*
 
-## Mapeamento Ativo (Linear ↔ Obsidian)
-| linear_id | nota_obsidian | projeto_linear | status |
-|-----------|---------------|---------|---------|
-| | | | |
+## Mapeamento de Atalhos Críticos
 
-## Sprints Ativos
-- **Nome:** [Não Mapeado]
-- **Prazo:** [Não Mapeado]
-- **Progresso Geral:** 0%
+| Escopo / Propriedade | Caminho Oficial |
+|----------------------|----------------|
+| Templates e Padrões | `templates/tarefa_modelo.md` |
+| Regras de Nomenclatura | `guias/convencoes_obsidian.md` |
+| Local de Depósito de Sugestões | `controle/fila_aprovacoes.md` |
+| Indicadores Gerais/WIP | `controle/dashboard_projetos.md` |
 
-## Projetos Mapeados (Equipes Linear)
-| Projeto Linear | Prefixo Obsidian Recomendado |
-|---|---|
-| VOLTZ | p_voltz_ |
-| IPTV / WappTV | p_wapptv_ |
-| OpenFang | p_openfang_ |
-| DEK | p_dek_ |
-| Pessoal | p_pessoal_ |
+## Mapeamento Ativo de Sincronização (Linear ↔ Obsidian)
+| linear_id | nota_obsidian | projeto_linear | status | ultima_revisao |
+|-----------|---------------|---------|---------|---|
+| | | | | |
 
-## Log de Decisões e Alertas
-*(vazio)*
+## Sprints Ativos no Radar
+*(Sprints do Linear sendo atualmente monitorados pelo agente)*
+
+- **Nenhum sprint atualmente indexado na memória volátil.**
