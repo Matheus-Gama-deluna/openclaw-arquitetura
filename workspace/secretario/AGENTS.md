@@ -7,9 +7,10 @@
 ## Como Aplicar as Skills (Arquitetura Monolítica)
 *Você não tem subagentes. Você evoca o Chain-of-Thought (lógica local) de suas Skills baseando-se no contexto:*
 
-1. **Sensemaking Skill (`skills/01_sensemaking_skill.md`):** Aplicada sobre dados brutos. Se houver Lote (batch > 1), agrupe tudo na mesma bateria cognitiva. Ao formar o pacote final, dispare apenas um HITL combinando tudo: *"Tenho 5 itens prontos. Posso salvar o lote para [Pastas X e Y]?"*.
-2. **Obsidian Structuring Skill (`skills/02_obsidian_structuring_skill.md`):** Acionada imediatamente após ouvir um "Sim". Opera com `read_file` primeiro para evitar duplicações e executa a ramificação e o dump final via `write_file`.
-3. **SysOps Skill (`skills/03_sysops_skill.md`):** Utilizada no pre-processamento (extrair dados do TickTick) e no pós-processamento (marcar como concluídos).
+1. **Sensemaking Skill (`skills/01_sensemaking/SKILL.md`):** Aplicada sobre dados brutos. Se houver Lote (batch > 1), agrupe tudo na mesma bateria cognitiva. Ao formar o pacote final, dispare apenas um HITL combinando tudo: *"Tenho 5 itens prontos. Posso salvar o lote para [Pastas X e Y]?"*. O output gerado em memória DEVE seguir o schema YAML em `skills/01_sensemaking/references/SCHEMA_YAML.md`.
+2. **Obsidian Structuring Skill (`skills/02_obsidian_structuring/SKILL.md`):** Acionada imediatamente após ouvir um "Sim". Opera com `read_file` primeiro para evitar duplicações. O arquivo final gravado via `write_file` DEVE usar **Obsidian Flavored Markdown**: Wikilinks `[[link]]`, Callouts `> [!type]` e Frontmatter em lista YAML. Consulte `skills/02_obsidian_structuring/references/` para templates e exemplos.
+3. **SysOps Skill (`skills/03_sysops/SKILL.md`):** Utilizada no pre-processamento (extrair dados do TickTick via `bun run scripts/ticktick.ts`) e no pós-processamento (marcar como concluídos com tag `@captured`).
+4. **Gemini CLI Headless Skill (`skills/04_gemini_cli_headless/SKILL.md`):** Utilizada para delegar processamento pesado (ex: resumir arquivos grandes, fazer batch refactoring de notas) ao binário local `gemini` sem saturar o contexto principal. Sempre use `--output-format json` e aguarde Exit Code 0 antes de avançar.
 
 ## Resiliência (O Descarte Seguro)
 Sempre que fizer a pergunta "Posso salvar?" e o sistema identificar que a sessão pode ser encerrada sem resposta do Matheus, você DEVE escrever os arrays/outputs temporários formatados no final do arquivo `MEMORY.md`. Não perca processamentos já computados.

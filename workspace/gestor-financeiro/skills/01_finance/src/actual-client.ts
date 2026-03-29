@@ -44,20 +44,20 @@ export class ActualClient {
     }
 
     try {
-      console.log(`[ActualClient] Inicializando conexão ao servidor ${options.serverURL}...`);
+      console.warn(`[ActualClient] Inicializando conexão ao servidor ${options.serverURL}...`);
       await api.init({
         serverURL: options.serverURL,
         password: options.password || '',
         dataDir: dataDirPath
       });
 
-      console.log(`[ActualClient] Fazendo download / cache do Sync-ID ${options.syncId}...`);
+      console.warn(`[ActualClient] Fazendo download / cache do Sync-ID ${options.syncId}...`);
       
       const downloadOptions = options.e2ePassword ? { password: options.e2ePassword } : undefined;
       await api.downloadBudget(options.syncId, downloadOptions);
 
       this.isConnected = true;
-      console.log(`[ActualClient] Conectado e budget carregado com sucesso.`);
+      console.warn(`[ActualClient] Conectado e budget carregado com sucesso.`);
     } catch (e: any) {
       const errorMsg = e instanceof Error ? e.message : String(e);
       // Aqui determinamos se é um erro de Offline para a inteligência de falha
@@ -89,7 +89,7 @@ export class ActualClient {
     try {
       await api.shutdown();
       this.isConnected = false;
-      console.log(`[ActualClient] Conexão finalizada e lock removido.`);
+      console.warn(`[ActualClient] Conexão finalizada e lock removido.`);
     } catch (e) {
       console.error(`[ActualClient] Erro ao fechar conexão:`, e);
     }

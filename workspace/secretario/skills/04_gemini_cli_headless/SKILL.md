@@ -38,3 +38,10 @@ Toda vez que você usar o CLI local para invocar uma segunda IA (para focar em p
 5. **Passagem de Bastão Fim/HITL**:
    - Entregue os resultados limpos do processamento Headless paralelizável a você mesmo, apresente o conteúdo ou amostras para o Mestre: *"Tarefa Local Paralela concluída pelo CLI sem problemas. Foram gastos [stats.usage] tokens e rendeu: [pequeno trecho]..."*
    - Peça permissão para rotear o conteúdo resolvido para a instrução oficial e gravar via *Obsidian Structuring Skill*.
+
+## Referências
+
+- O output processado deve ser entregue à `skills/02_obsidian_structuring/SKILL.md` para formatação final em Obsidian Flavored Markdown
+- Use como entrada arquivos `.md` do Vault — nunca passe conteúdo raw que já existe em nota sem ler antes com `read_file`
+- Para processamento em batch de notas (ex: refatoração de múltiplas notas do Inbox), consulte os exemplos em `skills/01_sensemaking/references/EXEMPLOS_DRAFT.md`
+

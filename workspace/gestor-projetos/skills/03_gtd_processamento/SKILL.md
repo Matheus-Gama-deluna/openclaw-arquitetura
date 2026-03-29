@@ -32,3 +32,7 @@ Você NÃO salva essas propostas no arquivo fonte! Você deposita a proposta no 
 
 ## Ação da Skill
 Transforme essa intuição em um JSON / Patch de modificações a ser registrado em `fila_aprovacoes.md`.
+
+## Referências
+
+- [FILA_APROVACOES.md](references/FILA_APROVACOES.md) — Formato completo da fila de aprovações, heurísticas de reescrita de título, classificação de energia e regra de WIP (limite de 5 tarefas ativas)

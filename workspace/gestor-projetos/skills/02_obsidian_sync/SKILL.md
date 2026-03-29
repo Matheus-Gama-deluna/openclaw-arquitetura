@@ -35,3 +35,8 @@ Quando for aplicar a gravação de uma nota (seja porque aprovou um processament
    ```
    - Se possuir divergência, crie e preencha os campos referentes e informe o usuário enviando o problema para `30-Controle/divergencias-linear.md`.
 4. **Gravação**: Reúna Frontmatter + Corpo e salve. Atualize os eventos em `auditoria_local`.
+
+## Referências
+
+- [SCHEMA_YAML_PROJETOS.md](references/SCHEMA_YAML_PROJETOS.md) — Schema YAML completo para tarefas, referências e notas, incluindo todos os campos obrigatórios e opcionais
+- [EXEMPLOS_NOTAS.md](references/EXEMPLOS_NOTAS.md) — Exemplos de notas `.md` finais prontas para o Vault (tarefa ativa, bloqueada, concluída com Linear ID)

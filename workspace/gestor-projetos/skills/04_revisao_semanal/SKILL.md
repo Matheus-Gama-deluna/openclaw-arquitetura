@@ -29,3 +29,9 @@ A varredura deve encontrar:
 1. Levante todas essas inconformidades.
 2. Apresente as métricas agregadas por projeto no `30-Controle/dashboard_projetos.md`.
 3. Indique as falhas no final do arquivo de dashboard para o humano verificar na semana de modo unificado e não como alarmes individuais intermitentes.
+4. **Dashboard Dinâmico (Obsidian Bases)**: Verifique se `30-Controle/dashboard_projetos.base` existe. Se não existir, crie-o usando o schema em [OBSIDIAN_BASES_DASHBOARD.md](references/OBSIDIAN_BASES_DASHBOARD.md). O `.base` mostra todas as tarefas filtradas e agrupadas automaticamente — use-o como complemento visual ao relatório narrativo do `.md`.
+
+## Referências
+
+- [DASHBOARD_FORMATO.md](references/DASHBOARD_FORMATO.md) — Formato completo do dashboard semanal com todos os Callouts, tabelas de métricas e critérios técnicos de varredura (limiares por problema)
+- [OBSIDIAN_BASES_DASHBOARD.md](references/OBSIDIAN_BASES_DASHBOARD.md) — Schema `.base` para dashboard dinâmico (WIP, tarefas ativas, bloqueadas, vencidas e sync com Linear)

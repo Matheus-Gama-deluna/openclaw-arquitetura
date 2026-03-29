@@ -15,7 +15,7 @@ Sua interação com CLI deve ser determinística. Não altere metadados nem form
 ## Instruções de Execução (Passo a Passo)
 
 1. **Acionamento do Script de Leitura**:
-   - Execute o script (`node scripts/ticktick.js`) utilizando `exec_command`. Retenha a saída crua (JSON/texto).
+   - Execute o script usando `exec_command`: `bun run scripts/ticktick.ts tasks --status pending --json`. Retenha a saída crua (JSON/texto).
 
 2. **Leitura Silenciosa**:
    - Não avise o usuário "Estou executando o script..." a não ser que dê erro. Trabalhe nos bastidores de forma invisível.
@@ -27,3 +27,8 @@ Sua interação com CLI deve ser determinística. Não altere metadados nem form
 
 4. **Tratamento de Falhas (Rollback)**:
    - Se os scripts reportarem "Timeout" ou "Conexão Recusada", não entre num looping eterno executando de novo. Avise o Mestre e morra em falha contida.
+
+## Referências
+
+- Os outputs brutos devem ser passados para `skills/01_sensemaking/SKILL.md` sem reformatação
+- O schema YAML esperado está em `skills/01_sensemaking/references/SCHEMA_YAML.md`

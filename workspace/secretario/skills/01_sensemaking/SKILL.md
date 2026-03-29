@@ -24,20 +24,34 @@ Siga *rigorosamente* esta ordem ao receber novas entradas para processar:
    - Decida o Tipo ('idea', 'project', 'action' ou 'reference').
 
 3. **Geração do Output Schema (Apenas em Memória)**:
-   - Prepare o rascunho de um objeto YAML contendo todos os campos analisados no formato:
+   - Prepare o rascunho de um objeto YAML válido para Obsidian Frontmatter contendo todos os campos analisados no formato:
    ```yaml
    ---
    id: "gere_um_id_curto"
    source: "origem_detectada_no_passo_1"
    type: "o_tipo_escolhido"
    status: "draft"
-   context: "@o_contexto_escolhido"
+   tags:
+     - "o_contexto_escolhido_sem_arroba"
+     - "outra_tag_detectada"
+   aliases:
+     - "Nome Alternativo (se houver)"
    ---
    # Título Claro
-   - Resumo e lista de dependências...
+   
+   > [!abstract] Resumo
+   > Inclua um breve callout com o resumo da intenção principal.
+   
+   - Resumo e lista de dependências usando links internos `[[Nome da Dependência]]` se cabível...
    ```
 
 4. **Protocolo HITL (Human-in-the-loop Feroz)**:
    - Envie uma mensagem objetiva para o usuário com o sumário interpretado.
    - Pergunte explicitamente: *"O escopo acima está correto? Posso enviá-lo para o Obsidian?"*
    - PAUSE a execução e espere a resposta. Se aprovado, proceda para a *Obsidian Structuring Skill*.
+
+## Referências
+
+- [SCHEMA_YAML.md](references/SCHEMA_YAML.md) — Schema YAML completo por tipo de nota (`action`, `project`, `idea`, `reference`)
+- [CALLOUTS_GTD.md](references/CALLOUTS_GTD.md) — Mapeamento de Callouts Obsidian para cada situação GTD
+- [EXEMPLOS_DRAFT.md](references/EXEMPLOS_DRAFT.md) — Exemplos completos de drafts em memória prontos para HITL

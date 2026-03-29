@@ -4,7 +4,7 @@ describe("CLI Entrypoint e Proteções de Failover (E2E Fake)", () => {
   
   test("Intent ausente deve abortar com JSON estruturado avisando erro", async () => {
     // Invocamos CLI sem os parâmetros obrigatórios `--intent` via Subprocesso Bun
-    const proc = Bun.spawn(["bun", "run", "src/cli.ts"], {
+    const proc = Bun.spawn([process.execPath, "run", "src/cli.ts"], {
       cwd: "./",
       stdout: "pipe",
     });
@@ -20,7 +20,7 @@ describe("CLI Entrypoint e Proteções de Failover (E2E Fake)", () => {
     // Executa CLI mandando pra uma URL localhost invalida com dados falsos.
     // Assim o @actual-app/api vai falhar ao baixar o SQLite.
     // O Singleton deve processar o erro de Fetch e cuspir [ERROR_OFFLINE] convertendo pra failover_required = true
-    const proc = Bun.spawn(["bun", "run", "src/cli.ts", "--intent=visao_geral_mes"], {
+    const proc = Bun.spawn([process.execPath, "run", "src/cli.ts", "--intent=visao_geral_mes"], {
       cwd: "./",
       env: { 
         ...process.env, 

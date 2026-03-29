@@ -8,7 +8,7 @@ Para não desperdiçar tokens, ele opera em um limite "Batch OR Timeout" sobre a
 ### A Ordem de Operação Cronometrada (A cada 30 min)
 
 1. **Leitura Cega (`exec_command`)**
-   Use a `SysOps Skill` para executar `bun run scripts/ticktick.ts tasks --status pending --json` (projetos associados a Inbox).
+   Use a `SysOps Skill` (`skills/03_sysops/SKILL.md`) para executar `bun run scripts/ticktick.ts tasks --status pending --json` (projetos associados a Inbox).
 2. **Avaliação Ponderada (Filtro Zero-Tokens)**
    - Capture a quantidade `Q` de pendências do JSON.
    - Se `Q == 0`, o seu Chain-of-Thought acaba imediatamente. Responda sucesso e aborte.
@@ -16,3 +16,4 @@ Para não desperdiçar tokens, ele opera em um limite "Batch OR Timeout" sobre a
 3. **Execução de Batch (`Q >= 5` ou `Tempo > 3h`)**
    - Transacione todos os itens capturados pelo CLI diretamente para a `Sensemaking Skill`.
    - Lance um bloco HITL condensado ao usuário.
+   - Após aprovação e escrita no Vault, verifique se `0_Inbox/inbox.base` existe. Se não existir, crie-o conforme `skills/02_obsidian_structuring/references/OBSIDIAN_BASES_INBOX.md`.
